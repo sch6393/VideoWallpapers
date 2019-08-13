@@ -63,6 +63,13 @@ namespace VideoWallpapers
         public static bool m_bFixed = false;
 
         /// <summary>
+        /// Setting 
+        /// </summary>
+        /// protected readonly string m_ro_strSettingFile = Path.Combine(Application.StartupPath, constStrApplication + ".dat");
+        protected string m_strSettingFile = Path.Combine(Application.StartupPath, constStrApplication + ".dat");
+        protected Setting m_setting = new Setting();
+
+        /// <summary>
         /// 생성자
         /// </summary>
         public Form1()
@@ -100,10 +107,21 @@ namespace VideoWallpapers
             // 아이콘 생성
             m_notifyIcon.Visible = true;
 
+            LoadSetting();
+
             // 밝기 조절
             SetBrightness(m_iBrightness);
 
-            label_VideoName.Text = "None";
+            // label_VideoName.Text = "None";
+
+            if (label_VideoPath.Text == string.Empty)
+            {
+                Stop();
+            }
+            else
+            {
+                Play();
+            }
         }
 
         /// <summary>
@@ -348,6 +366,64 @@ namespace VideoWallpapers
 
         #endregion
 
+        #region Setting
+
+        /// <summary>
+        /// Setting 파일 로드
+        /// </summary>
+        protected void LoadSetting()
+        {
+            if (File.Exists(m_strSettingFile))
+            {
+                m_setting.LoadFromFile(m_strSettingFile);
+            }
+
+            ApplySetting();
+        }
+
+        /// <summary>
+        /// Setting 파일 저장
+        /// </summary>
+        protected void SaveSetting()
+        {
+            m_setting.strPath = label_VideoPath.Text;
+            m_setting.strName = label_VideoName.Text;
+            m_setting.iVolume = metroTrackBar_Volume.Value;
+            m_setting.iBrightness = metroTrackBar_Brightness.Value;
+
+            m_setting.SaveToFile(m_strSettingFile);
+        }
+
+        /// <summary>
+        /// Setting 파일 적용
+        /// </summary>
+        protected void ApplySetting()
+        {
+            m_strFilePath = m_setting.strPath;
+            label_VideoPath.Text = m_setting.strPath;
+            label_VideoName.Text = m_setting.strName;
+
+            m_iVolume = m_setting.iVolume;
+            metroTrackBar_Volume.Value = m_setting.iVolume;
+
+            m_iBrightness = m_setting.iBrightness;
+            metroTrackBar_Brightness.Value = m_setting.iBrightness;
+
+            if (FNE())
+            {
+                metroButton_Prev.Enabled = true;
+                metroButton_Next.Enabled = true;
+            }
+            else
+            {
+                metroButton_Prev.Enabled = false;
+                metroButton_Next.Enabled = false;
+            }
+        }
+
+        #endregion
+
+
         #region Button Event
 
         /// <summary>
@@ -380,6 +456,8 @@ namespace VideoWallpapers
                             m_strFilePath        = strPath;
                             label_VideoPath.Text = strPath;
                             label_VideoName.Text = strName;
+
+                            SaveSetting();
 
                             Play();
                         }
@@ -456,6 +534,10 @@ namespace VideoWallpapers
             label_VideoPath.Text = "";
             label_VideoName.Text = "None";
 
+            m_setting.strPath = "";
+            m_setting.strName = "None";
+            m_setting.SaveToFile(m_strSettingFile);
+
             g_program.m_Form2.Stop();
         }
 
@@ -482,6 +564,9 @@ namespace VideoWallpapers
         {
             m_iVolume = metroTrackBar_Volume.Value;
             // metroProgressBar_Volume.Value = Convert.ToInt32(metroTrackBar_Volume.Value * 0.98) + 2;
+
+            m_setting.iVolume = metroTrackBar_Volume.Value;
+            m_setting.SaveToFile(m_strSettingFile);
         }
 
         /// <summary>
@@ -495,6 +580,9 @@ namespace VideoWallpapers
             // metroProgressBar_Brightness.Value = Convert.ToInt32(metroTrackBar_Brightness.Value * 0.98) + 2;
 
             SetBrightness(m_iBrightness);
+
+            m_setting.iBrightness = metroTrackBar_Brightness.Value;
+            m_setting.SaveToFile(m_strSettingFile);
         }
 
         #endregion
