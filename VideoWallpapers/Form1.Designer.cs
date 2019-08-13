@@ -47,6 +47,10 @@
             this.metroButton_Stop = new MetroFramework.Controls.MetroButton();
             this.m_notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.metroButton_Hide = new MetroFramework.Controls.MetroButton();
+            this.metroCheckBox_Random = new MetroFramework.Controls.MetroCheckBox();
+            this.label_RandomOn = new System.Windows.Forms.Label();
+            this.label_RandomOff = new System.Windows.Forms.Label();
+            this.label_Random = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label_Brightness
@@ -70,7 +74,7 @@
             this.label_FileOpen.Location = new System.Drawing.Point(26, 165);
             this.label_FileOpen.Name = "label_FileOpen";
             this.label_FileOpen.Size = new System.Drawing.Size(64, 15);
-            this.label_FileOpen.TabIndex = 10;
+            this.label_FileOpen.TabIndex = 0;
             this.label_FileOpen.Text = "File Open";
             // 
             // label_Buttons
@@ -245,15 +249,68 @@
             this.metroButton_Hide.Location = new System.Drawing.Point(506, 190);
             this.metroButton_Hide.Name = "metroButton_Hide";
             this.metroButton_Hide.Size = new System.Drawing.Size(50, 23);
-            this.metroButton_Hide.TabIndex = 38;
+            this.metroButton_Hide.TabIndex = 9;
             this.metroButton_Hide.Text = "Hide";
             this.metroButton_Hide.UseSelectable = true;
             this.metroButton_Hide.Click += new System.EventHandler(this.MetroButton_Hide_Click);
             // 
+            // metroCheckBox_Random
+            // 
+            this.metroCheckBox_Random.Location = new System.Drawing.Point(226, 220);
+            this.metroCheckBox_Random.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.metroCheckBox_Random.Name = "metroCheckBox_Random";
+            this.metroCheckBox_Random.Size = new System.Drawing.Size(23, 25);
+            this.metroCheckBox_Random.TabIndex = 10;
+            this.metroCheckBox_Random.UseSelectable = true;
+            this.metroCheckBox_Random.Click += new System.EventHandler(this.MetroCheckBox_Random_Click);
+            // 
+            // label_RandomOn
+            // 
+            this.label_RandomOn.AutoSize = true;
+            this.label_RandomOn.BackColor = System.Drawing.Color.Transparent;
+            this.label_RandomOn.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_RandomOn.ForeColor = System.Drawing.Color.LightSeaGreen;
+            this.label_RandomOn.Location = new System.Drawing.Point(246, 225);
+            this.label_RandomOn.Name = "label_RandomOn";
+            this.label_RandomOn.Size = new System.Drawing.Size(25, 15);
+            this.label_RandomOn.TabIndex = 0;
+            this.label_RandomOn.Text = "On";
+            this.label_RandomOn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_RandomOff
+            // 
+            this.label_RandomOff.AutoSize = true;
+            this.label_RandomOff.BackColor = System.Drawing.Color.Transparent;
+            this.label_RandomOff.Enabled = false;
+            this.label_RandomOff.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_RandomOff.ForeColor = System.Drawing.Color.Gray;
+            this.label_RandomOff.Location = new System.Drawing.Point(246, 225);
+            this.label_RandomOff.Name = "label_RandomOff";
+            this.label_RandomOff.Size = new System.Drawing.Size(27, 15);
+            this.label_RandomOff.TabIndex = 0;
+            this.label_RandomOff.Text = "Off";
+            this.label_RandomOff.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_Random
+            // 
+            this.label_Random.AutoSize = true;
+            this.label_Random.BackColor = System.Drawing.Color.Transparent;
+            this.label_Random.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_Random.ForeColor = System.Drawing.Color.Black;
+            this.label_Random.Location = new System.Drawing.Point(26, 225);
+            this.label_Random.Name = "label_Random";
+            this.label_Random.Size = new System.Drawing.Size(86, 15);
+            this.label_Random.TabIndex = 0;
+            this.label_Random.Text = "Random Play";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(582, 230);
+            this.ClientSize = new System.Drawing.Size(582, 260);
+            this.Controls.Add(this.metroCheckBox_Random);
+            this.Controls.Add(this.label_RandomOn);
+            this.Controls.Add(this.label_RandomOff);
+            this.Controls.Add(this.label_Random);
             this.Controls.Add(this.metroButton_Hide);
             this.Controls.Add(this.metroButton_Stop);
             this.Controls.Add(this.metroButton_Next);
@@ -303,5 +360,9 @@
         private MetroFramework.Controls.MetroButton metroButton_Stop;
         private System.Windows.Forms.NotifyIcon m_notifyIcon;
         private MetroFramework.Controls.MetroButton metroButton_Hide;
+        private MetroFramework.Controls.MetroCheckBox metroCheckBox_Random;
+        private System.Windows.Forms.Label label_RandomOn;
+        private System.Windows.Forms.Label label_RandomOff;
+        private System.Windows.Forms.Label label_Random;
     }
 }

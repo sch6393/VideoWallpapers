@@ -34,6 +34,12 @@ namespace VideoWallpapers
             set;
         } = 50;
 
+        public bool bRandom
+        {
+            get;
+            set;
+        } = false;
+
         /// <summary>
         /// 파일에 저장
         /// </summary>
@@ -46,6 +52,7 @@ namespace VideoWallpapers
                 binaryWriter.Write(strName);
                 binaryWriter.Write(iVolume);
                 binaryWriter.Write(iBrightness);
+                binaryWriter.Write(bRandom);
 
                 binaryWriter.Close();
             }
@@ -63,6 +70,7 @@ namespace VideoWallpapers
                 strName = binaryReader.ReadString();
                 iVolume = binaryReader.ReadInt32();
                 iBrightness = binaryReader.ReadInt32();
+                bRandom = binaryReader.ReadBoolean();
 
                 binaryReader.Close();
             }

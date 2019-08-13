@@ -70,6 +70,15 @@ namespace VideoWallpapers
 
             axWindowsMediaPlayer.settings.setMode("Loop", true);
 
+            if (Form1.m_bRandom)
+            {
+                axWindowsMediaPlayer.settings.setMode("Shuffle", true);
+            }
+            else
+            {
+                axWindowsMediaPlayer.settings.setMode("Shuffle", false);
+            }
+
             axWindowsMediaPlayer.URL = Form1.m_strFilePath;
 
             axWindowsMediaPlayer.Ctlcontrols.play();

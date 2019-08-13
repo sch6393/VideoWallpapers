@@ -51,6 +51,7 @@ namespace VideoWallpapers
         /// </summary>
         public static string m_strFilePath = "";
         public static int m_iVolume = 0;
+        public static bool m_bRandom = false;
 
         /// <summary>
         /// 밝기 값
@@ -111,6 +112,9 @@ namespace VideoWallpapers
 
             // 밝기 조절
             SetBrightness(m_iBrightness);
+
+            // 랜덤 재생 구분
+            metroCheckBox_Random.Checked = m_bRandom ? true : false;
 
             // label_VideoName.Text = "None";
 
@@ -238,6 +242,10 @@ namespace VideoWallpapers
             label_Brightness.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
 
             label_Buttons.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            label_Random.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            label_RandomOn.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            label_RandomOff.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
         }
 
         /// <summary>
@@ -295,16 +303,7 @@ namespace VideoWallpapers
         {
             Stop();
 
-            if (FNE())
-            {
-                metroButton_Prev.Enabled = true;
-                metroButton_Next.Enabled = true;
-            }
-            else
-            {
-                metroButton_Prev.Enabled = false;
-                metroButton_Next.Enabled = false;
-            }
+            ObjectActive(m_bRandom);
 
             g_program.m_Form2.Play();
         }
@@ -364,6 +363,35 @@ namespace VideoWallpapers
             Activate();
         }
 
+        /// <summary>
+        /// 랜덤 재생 시 오브젝트 설정
+        /// true : 랜덤 재생 ON, false : 랜덤 재생 OFF
+        /// </summary>
+        /// <param name="bFlag"></param>
+        protected void ObjectActive(bool bFlag)
+        {
+            if (FNE())
+            {
+                metroCheckBox_Random.Enabled = true;
+                metroButton_Prev.Enabled = true;
+                metroButton_Next.Enabled = true;
+                label_RandomOn.Enabled = true;
+                label_RandomOff.Enabled = true;
+            }
+            else
+            {
+                metroCheckBox_Random.Enabled = false;
+                metroButton_Prev.Enabled = false;
+                metroButton_Next.Enabled = false;
+                label_RandomOn.Enabled = false;
+                label_RandomOff.Enabled = false;
+            }
+
+            metroCheckBox_Random.Checked = bFlag;
+            label_RandomOn.Visible = bFlag;
+            label_RandomOff.Visible = !bFlag;
+        }
+
         #endregion
 
         #region Setting
@@ -390,6 +418,7 @@ namespace VideoWallpapers
             m_setting.strName = label_VideoName.Text;
             m_setting.iVolume = metroTrackBar_Volume.Value;
             m_setting.iBrightness = metroTrackBar_Brightness.Value;
+            m_setting.bRandom = m_bRandom;
 
             m_setting.SaveToFile(m_strSettingFile);
         }
@@ -409,16 +438,9 @@ namespace VideoWallpapers
             m_iBrightness = m_setting.iBrightness;
             metroTrackBar_Brightness.Value = m_setting.iBrightness;
 
-            if (FNE())
-            {
-                metroButton_Prev.Enabled = true;
-                metroButton_Next.Enabled = true;
-            }
-            else
-            {
-                metroButton_Prev.Enabled = false;
-                metroButton_Next.Enabled = false;
-            }
+            m_bRandom = m_setting.bRandom;
+
+            ObjectActive(m_bRandom);
         }
 
         #endregion
@@ -607,6 +629,36 @@ namespace VideoWallpapers
         private void M_notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ShowWindow();
+        }
+
+        #endregion
+
+        #region CheckBox Event
+
+        /// <summary>
+        /// 랜덤 재생
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroCheckBox_Random_Click(object sender, EventArgs e)
+        {
+            // 체크박스를 풀어도 목록 리스트가 새로 정렬이 되지 않음 (랜덤이 된 리스트를 그대로 가져옴)
+
+            // 해결방안 1. axWindowsMediaPlayer의 메모리를 해제했다가 다시 할당
+            // → 실패 (참조 오류 발생, 컨트롤을 Form Design에서 생성하면 안됨, 좀 더 확인이 필요)
+
+            // 해결방안 2. Form2의 메모리를 해제했다가 다시 할당
+            // → 실패 (Form3도 같이 진행되어야만 가능하나 Form3는 ApplicationContext의 상속을 받고 있어 안됨)
+
+            // 해결방안 3. Loop와 Shuffle은 서로 다른 기능
+            // → 성공 (Loop는 영상 또는 목록의 반복 재생을 설정하고 Shuffle은 목록 재생을 랜덤으로 할지를 설정)
+
+            m_bRandom = metroCheckBox_Random.Checked ? true : false;
+
+            m_setting.bRandom = m_bRandom;
+            m_setting.SaveToFile(m_strSettingFile);
+
+            Play();
         }
 
         #endregion
