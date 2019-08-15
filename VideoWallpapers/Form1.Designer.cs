@@ -51,6 +51,12 @@
             this.label_RandomOn = new System.Windows.Forms.Label();
             this.label_RandomOff = new System.Windows.Forms.Label();
             this.label_Random = new System.Windows.Forms.Label();
+            this.label_StartOn = new System.Windows.Forms.Label();
+            this.label_StartOff = new System.Windows.Forms.Label();
+            this.label_StartupProgram = new System.Windows.Forms.Label();
+            this.metroCheckBox_StartupPrograms = new MetroFramework.Controls.MetroCheckBox();
+            this.metroButton_Monitor = new MetroFramework.Controls.MetroButton();
+            this.label_Monitor = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label_Brightness
@@ -117,7 +123,7 @@
             // 
             this.label_VideoPath.AutoSize = true;
             this.label_VideoPath.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_VideoPath.Location = new System.Drawing.Point(223, 75);
+            this.label_VideoPath.Location = new System.Drawing.Point(231, 75);
             this.label_VideoPath.Name = "label_VideoPath";
             this.label_VideoPath.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label_VideoPath.Size = new System.Drawing.Size(71, 15);
@@ -130,7 +136,7 @@
             // 
             this.label_VideoName.AutoSize = true;
             this.label_VideoName.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_VideoName.Location = new System.Drawing.Point(223, 75);
+            this.label_VideoName.Location = new System.Drawing.Point(231, 75);
             this.label_VideoName.Name = "label_VideoName";
             this.label_VideoName.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label_VideoName.Size = new System.Drawing.Size(71, 15);
@@ -142,7 +148,7 @@
             // 
             this.metroTrackBar_Brightness.BackColor = System.Drawing.Color.Transparent;
             this.metroTrackBar_Brightness.LargeChange = 10;
-            this.metroTrackBar_Brightness.Location = new System.Drawing.Point(226, 130);
+            this.metroTrackBar_Brightness.Location = new System.Drawing.Point(234, 130);
             this.metroTrackBar_Brightness.Maximum = 50;
             this.metroTrackBar_Brightness.Minimum = 5;
             this.metroTrackBar_Brightness.MouseWheelBarPartitions = 18;
@@ -159,7 +165,7 @@
             // 
             this.metroTrackBar_Volume.BackColor = System.Drawing.Color.Transparent;
             this.metroTrackBar_Volume.LargeChange = 10;
-            this.metroTrackBar_Volume.Location = new System.Drawing.Point(226, 100);
+            this.metroTrackBar_Volume.Location = new System.Drawing.Point(234, 100);
             this.metroTrackBar_Volume.Name = "metroTrackBar_Volume";
             this.metroTrackBar_Volume.Size = new System.Drawing.Size(330, 23);
             this.metroTrackBar_Volume.Style = MetroFramework.MetroColorStyle.Red;
@@ -172,7 +178,7 @@
             // metroButton_FileOpen
             // 
             this.metroButton_FileOpen.Highlight = true;
-            this.metroButton_FileOpen.Location = new System.Drawing.Point(226, 160);
+            this.metroButton_FileOpen.Location = new System.Drawing.Point(234, 160);
             this.metroButton_FileOpen.Name = "metroButton_FileOpen";
             this.metroButton_FileOpen.Size = new System.Drawing.Size(330, 23);
             this.metroButton_FileOpen.TabIndex = 3;
@@ -183,7 +189,7 @@
             // metroButton_Prev
             // 
             this.metroButton_Prev.Highlight = true;
-            this.metroButton_Prev.Location = new System.Drawing.Point(338, 190);
+            this.metroButton_Prev.Location = new System.Drawing.Point(346, 190);
             this.metroButton_Prev.Name = "metroButton_Prev";
             this.metroButton_Prev.Size = new System.Drawing.Size(50, 23);
             this.metroButton_Prev.TabIndex = 6;
@@ -194,7 +200,7 @@
             // metroButton_Pause
             // 
             this.metroButton_Pause.Highlight = true;
-            this.metroButton_Pause.Location = new System.Drawing.Point(226, 190);
+            this.metroButton_Pause.Location = new System.Drawing.Point(234, 190);
             this.metroButton_Pause.Name = "metroButton_Pause";
             this.metroButton_Pause.Size = new System.Drawing.Size(50, 23);
             this.metroButton_Pause.TabIndex = 4;
@@ -205,7 +211,7 @@
             // metroButton_Resume
             // 
             this.metroButton_Resume.Highlight = true;
-            this.metroButton_Resume.Location = new System.Drawing.Point(282, 190);
+            this.metroButton_Resume.Location = new System.Drawing.Point(290, 190);
             this.metroButton_Resume.Name = "metroButton_Resume";
             this.metroButton_Resume.Size = new System.Drawing.Size(50, 23);
             this.metroButton_Resume.TabIndex = 5;
@@ -216,7 +222,7 @@
             // metroButton_Next
             // 
             this.metroButton_Next.Highlight = true;
-            this.metroButton_Next.Location = new System.Drawing.Point(394, 190);
+            this.metroButton_Next.Location = new System.Drawing.Point(402, 190);
             this.metroButton_Next.Name = "metroButton_Next";
             this.metroButton_Next.Size = new System.Drawing.Size(50, 23);
             this.metroButton_Next.TabIndex = 7;
@@ -227,7 +233,7 @@
             // metroButton_Stop
             // 
             this.metroButton_Stop.Highlight = true;
-            this.metroButton_Stop.Location = new System.Drawing.Point(450, 190);
+            this.metroButton_Stop.Location = new System.Drawing.Point(458, 190);
             this.metroButton_Stop.Name = "metroButton_Stop";
             this.metroButton_Stop.Size = new System.Drawing.Size(50, 23);
             this.metroButton_Stop.TabIndex = 8;
@@ -246,7 +252,7 @@
             // metroButton_Hide
             // 
             this.metroButton_Hide.Highlight = true;
-            this.metroButton_Hide.Location = new System.Drawing.Point(506, 190);
+            this.metroButton_Hide.Location = new System.Drawing.Point(514, 190);
             this.metroButton_Hide.Name = "metroButton_Hide";
             this.metroButton_Hide.Size = new System.Drawing.Size(50, 23);
             this.metroButton_Hide.TabIndex = 9;
@@ -256,11 +262,11 @@
             // 
             // metroCheckBox_Random
             // 
-            this.metroCheckBox_Random.Location = new System.Drawing.Point(226, 220);
+            this.metroCheckBox_Random.Location = new System.Drawing.Point(234, 250);
             this.metroCheckBox_Random.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.metroCheckBox_Random.Name = "metroCheckBox_Random";
             this.metroCheckBox_Random.Size = new System.Drawing.Size(23, 25);
-            this.metroCheckBox_Random.TabIndex = 10;
+            this.metroCheckBox_Random.TabIndex = 11;
             this.metroCheckBox_Random.UseSelectable = true;
             this.metroCheckBox_Random.Click += new System.EventHandler(this.MetroCheckBox_Random_Click);
             // 
@@ -270,7 +276,7 @@
             this.label_RandomOn.BackColor = System.Drawing.Color.Transparent;
             this.label_RandomOn.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label_RandomOn.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.label_RandomOn.Location = new System.Drawing.Point(246, 225);
+            this.label_RandomOn.Location = new System.Drawing.Point(254, 255);
             this.label_RandomOn.Name = "label_RandomOn";
             this.label_RandomOn.Size = new System.Drawing.Size(25, 15);
             this.label_RandomOn.TabIndex = 0;
@@ -284,7 +290,7 @@
             this.label_RandomOff.Enabled = false;
             this.label_RandomOff.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label_RandomOff.ForeColor = System.Drawing.Color.Gray;
-            this.label_RandomOff.Location = new System.Drawing.Point(246, 225);
+            this.label_RandomOff.Location = new System.Drawing.Point(254, 255);
             this.label_RandomOff.Name = "label_RandomOff";
             this.label_RandomOff.Size = new System.Drawing.Size(27, 15);
             this.label_RandomOff.TabIndex = 0;
@@ -297,16 +303,93 @@
             this.label_Random.BackColor = System.Drawing.Color.Transparent;
             this.label_Random.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label_Random.ForeColor = System.Drawing.Color.Black;
-            this.label_Random.Location = new System.Drawing.Point(26, 225);
+            this.label_Random.Location = new System.Drawing.Point(26, 255);
             this.label_Random.Name = "label_Random";
             this.label_Random.Size = new System.Drawing.Size(86, 15);
             this.label_Random.TabIndex = 0;
             this.label_Random.Text = "Random Play";
             // 
+            // label_StartOn
+            // 
+            this.label_StartOn.AutoSize = true;
+            this.label_StartOn.BackColor = System.Drawing.Color.Transparent;
+            this.label_StartOn.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_StartOn.ForeColor = System.Drawing.Color.LightSeaGreen;
+            this.label_StartOn.Location = new System.Drawing.Point(254, 285);
+            this.label_StartOn.Name = "label_StartOn";
+            this.label_StartOn.Size = new System.Drawing.Size(25, 15);
+            this.label_StartOn.TabIndex = 0;
+            this.label_StartOn.Text = "On";
+            this.label_StartOn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_StartOff
+            // 
+            this.label_StartOff.AutoSize = true;
+            this.label_StartOff.BackColor = System.Drawing.Color.Transparent;
+            this.label_StartOff.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_StartOff.ForeColor = System.Drawing.Color.Gray;
+            this.label_StartOff.Location = new System.Drawing.Point(254, 285);
+            this.label_StartOff.Name = "label_StartOff";
+            this.label_StartOff.Size = new System.Drawing.Size(27, 15);
+            this.label_StartOff.TabIndex = 0;
+            this.label_StartOff.Text = "Off";
+            this.label_StartOff.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label_StartupProgram
+            // 
+            this.label_StartupProgram.AutoSize = true;
+            this.label_StartupProgram.BackColor = System.Drawing.Color.Transparent;
+            this.label_StartupProgram.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_StartupProgram.ForeColor = System.Drawing.Color.Black;
+            this.label_StartupProgram.Location = new System.Drawing.Point(26, 285);
+            this.label_StartupProgram.Name = "label_StartupProgram";
+            this.label_StartupProgram.Size = new System.Drawing.Size(186, 15);
+            this.label_StartupProgram.TabIndex = 0;
+            this.label_StartupProgram.Text = "Startup Program Registration";
+            // 
+            // metroCheckBox_StartupPrograms
+            // 
+            this.metroCheckBox_StartupPrograms.Location = new System.Drawing.Point(234, 280);
+            this.metroCheckBox_StartupPrograms.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.metroCheckBox_StartupPrograms.Name = "metroCheckBox_StartupPrograms";
+            this.metroCheckBox_StartupPrograms.Size = new System.Drawing.Size(23, 25);
+            this.metroCheckBox_StartupPrograms.TabIndex = 12;
+            this.metroCheckBox_StartupPrograms.UseSelectable = true;
+            this.metroCheckBox_StartupPrograms.Click += new System.EventHandler(this.MetroCheckBox_StartupPrograms_Click);
+            // 
+            // metroButton_Monitor
+            // 
+            this.metroButton_Monitor.Highlight = true;
+            this.metroButton_Monitor.Location = new System.Drawing.Point(234, 220);
+            this.metroButton_Monitor.Name = "metroButton_Monitor";
+            this.metroButton_Monitor.Size = new System.Drawing.Size(330, 23);
+            this.metroButton_Monitor.TabIndex = 10;
+            this.metroButton_Monitor.Text = "Next Monitor";
+            this.metroButton_Monitor.UseSelectable = true;
+            this.metroButton_Monitor.Click += new System.EventHandler(this.MetroButton_Monitor_Click);
+            // 
+            // label_Monitor
+            // 
+            this.label_Monitor.AutoSize = true;
+            this.label_Monitor.BackColor = System.Drawing.Color.Transparent;
+            this.label_Monitor.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_Monitor.ForeColor = System.Drawing.Color.Black;
+            this.label_Monitor.Location = new System.Drawing.Point(26, 225);
+            this.label_Monitor.Name = "label_Monitor";
+            this.label_Monitor.Size = new System.Drawing.Size(93, 15);
+            this.label_Monitor.TabIndex = 0;
+            this.label_Monitor.Text = "Multi Monitor";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(582, 260);
+            this.ClientSize = new System.Drawing.Size(590, 325);
+            this.Controls.Add(this.label_Monitor);
+            this.Controls.Add(this.metroButton_Monitor);
+            this.Controls.Add(this.label_StartOn);
+            this.Controls.Add(this.label_StartOff);
+            this.Controls.Add(this.label_StartupProgram);
+            this.Controls.Add(this.metroCheckBox_StartupPrograms);
             this.Controls.Add(this.metroCheckBox_Random);
             this.Controls.Add(this.label_RandomOn);
             this.Controls.Add(this.label_RandomOff);
@@ -364,5 +447,11 @@
         private System.Windows.Forms.Label label_RandomOn;
         private System.Windows.Forms.Label label_RandomOff;
         private System.Windows.Forms.Label label_Random;
+        private System.Windows.Forms.Label label_StartOn;
+        private System.Windows.Forms.Label label_StartOff;
+        private System.Windows.Forms.Label label_StartupProgram;
+        private MetroFramework.Controls.MetroCheckBox metroCheckBox_StartupPrograms;
+        private MetroFramework.Controls.MetroButton metroButton_Monitor;
+        private System.Windows.Forms.Label label_Monitor;
     }
 }

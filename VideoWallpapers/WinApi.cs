@@ -173,5 +173,17 @@ namespace VideoWallpapers
         /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+
+        /// <summary>
+        /// 다중 모니터 정보
+        /// </summary>
+        /// <param name="hdc"></param>
+        /// <param name="lprcClip"></param>
+        /// <param name="lpfnEnum"></param>
+        /// <param name="dwData"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumDelegate lpfnEnum, int dwData);
+
     }
 }

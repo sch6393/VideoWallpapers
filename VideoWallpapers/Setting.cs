@@ -40,6 +40,12 @@ namespace VideoWallpapers
             set;
         } = false;
 
+        public int iMonitor
+        {
+            get;
+            set;
+        } = 0;
+
         /// <summary>
         /// 파일에 저장
         /// </summary>
@@ -53,6 +59,7 @@ namespace VideoWallpapers
                 binaryWriter.Write(iVolume);
                 binaryWriter.Write(iBrightness);
                 binaryWriter.Write(bRandom);
+                binaryWriter.Write(iMonitor);
 
                 binaryWriter.Close();
             }
@@ -60,19 +67,30 @@ namespace VideoWallpapers
 
         /// <summary>
         /// 파일에서 읽기
+        /// (바이너리 구조가 바뀌었을 때 에러가 발생하므로 try~catch 추가)
         /// </summary>
         /// <param name="strFilename"></param>
         public void LoadFromFile(string strFilename)
         {
             using (BinaryReader binaryReader = new BinaryReader(new FileStream(strFilename, FileMode.Open)))
             {
-                strPath = binaryReader.ReadString();
-                strName = binaryReader.ReadString();
-                iVolume = binaryReader.ReadInt32();
-                iBrightness = binaryReader.ReadInt32();
-                bRandom = binaryReader.ReadBoolean();
+                try
+                {
+                    strPath = binaryReader.ReadString();
+                    strName = binaryReader.ReadString();
+                    iVolume = binaryReader.ReadInt32();
+                    iBrightness = binaryReader.ReadInt32();
+                    bRandom = binaryReader.ReadBoolean();
+                    iMonitor = binaryReader.ReadInt32();
+                }
+                catch
+                {
 
-                binaryReader.Close();
+                }
+                finally
+                {
+                    binaryReader.Close();
+                }
             }
         }
     }
