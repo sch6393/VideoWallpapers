@@ -35,7 +35,7 @@ namespace VideoWallpapers
             FontSet(m_font);
         }
 
-        private void Form5_FormClosed(object sender, FormClosedEventArgs e)
+        private void Form4_FormClosed(object sender, FormClosedEventArgs e)
         {
             // 메모리, 리소스 해제
             this.Close();

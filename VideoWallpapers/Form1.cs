@@ -14,6 +14,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using Microsoft.Win32;
+
 // NuGet
 using MetroFramework.Forms;
 
@@ -51,6 +53,7 @@ namespace VideoWallpapers
         /// </summary>
         public static string m_strFilePath = "";
         public static int m_iVolume = 0;
+        public static bool m_bRandom = false;
 
         /// <summary>
         /// 밝기 값
@@ -59,8 +62,16 @@ namespace VideoWallpapers
 
         /// <summary>
         /// Background 변수들
+        /// (다중 모니터로 인해 각 폼에서 처리하도록 변경)
         /// </summary>
-        public static bool m_bFixed = false;
+        // public static bool m_bFixed = false;
+
+        /// <summary>
+        /// Setting 
+        /// </summary>
+        /// protected readonly string m_ro_strSettingFile = Path.Combine(Application.StartupPath, constStrApplication + ".dat");
+        protected string m_strSettingFile = Path.Combine(Application.StartupPath, constStrApplication + ".dat");
+        protected Setting m_setting = new Setting();
 
         /// <summary>
         /// 생성자
@@ -100,10 +111,63 @@ namespace VideoWallpapers
             // 아이콘 생성
             m_notifyIcon.Visible = true;
 
+            LoadSetting();
+
             // 밝기 조절
             SetBrightness(m_iBrightness);
 
-            label_VideoName.Text = "None";
+            // 랜덤 재생 구분
+            metroCheckBox_Random.Checked = m_bRandom ? true : false;
+
+            // 모니터 출력
+            if (m_setting.iMonitor != 0)
+            {
+                // Form4.DialogCustom("Caution!", "Monitor Index is not 0!");
+
+                for (int i = 0; i < m_setting.iMonitor; i++)
+                {
+                    MetroButton_Monitor_Click(null, e);
+                }
+            }
+
+            // 시작프로그램 등록 여부
+            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
+            {
+                metroCheckBox_StartupPrograms.Checked = (key.GetValue(constStrApplication) != null);
+            }
+
+            // 시작프로그램으로 등록되어있을 경우
+            if (metroCheckBox_StartupPrograms.Checked)
+            {
+                Task.Factory.StartNew(new Action(() =>
+                {
+                    Invoke(new Action(() =>
+                    {
+                        HideWindow();
+                    }));
+                }));
+
+                Thread.Sleep(100);
+
+                label_StartOn.Visible = true;
+                label_StartOff.Visible = false;
+            }
+            else
+            {
+                label_StartOn.Visible = false;
+                label_StartOff.Visible = true;
+            }
+
+            // label_VideoName.Text = "None";
+
+            if (label_VideoPath.Text == string.Empty)
+            {
+                Stop();
+            }
+            else
+            {
+                Play();
+            }
         }
 
         /// <summary>
@@ -220,6 +284,18 @@ namespace VideoWallpapers
             label_Brightness.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
 
             label_Buttons.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            label_Random.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            label_RandomOn.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            label_RandomOff.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            label_StartupProgram.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            label_StartOn.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            label_StartOff.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            label_Monitor.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            metroButton_FileOpen.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
         }
 
         /// <summary>
@@ -277,16 +353,7 @@ namespace VideoWallpapers
         {
             Stop();
 
-            if (FNE())
-            {
-                metroButton_Prev.Enabled = true;
-                metroButton_Next.Enabled = true;
-            }
-            else
-            {
-                metroButton_Prev.Enabled = false;
-                metroButton_Next.Enabled = false;
-            }
+            ObjectActive(m_bRandom);
 
             g_program.m_Form2.Play();
         }
@@ -346,7 +413,88 @@ namespace VideoWallpapers
             Activate();
         }
 
+        /// <summary>
+        /// 랜덤 재생 시 오브젝트 설정
+        /// true : 랜덤 재생 ON, false : 랜덤 재생 OFF
+        /// </summary>
+        /// <param name="bFlag"></param>
+        protected void ObjectActive(bool bFlag)
+        {
+            if (FNE())
+            {
+                metroCheckBox_Random.Enabled = true;
+                metroButton_Prev.Enabled = true;
+                metroButton_Next.Enabled = true;
+                label_RandomOn.Enabled = true;
+                label_RandomOff.Enabled = true;
+            }
+            else
+            {
+                metroCheckBox_Random.Enabled = false;
+                metroButton_Prev.Enabled = false;
+                metroButton_Next.Enabled = false;
+                label_RandomOn.Enabled = false;
+                label_RandomOff.Enabled = false;
+            }
+
+            metroCheckBox_Random.Checked = bFlag;
+            label_RandomOn.Visible = bFlag;
+            label_RandomOff.Visible = !bFlag;
+        }
+
         #endregion
+
+        #region Setting
+
+        /// <summary>
+        /// Setting 파일 로드
+        /// </summary>
+        protected void LoadSetting()
+        {
+            if (File.Exists(m_strSettingFile))
+            {
+                m_setting.LoadFromFile(m_strSettingFile);
+            }
+
+            ApplySetting();
+        }
+
+        /// <summary>
+        /// Setting 파일 저장
+        /// </summary>
+        protected void SaveSetting()
+        {
+            m_setting.strPath = label_VideoPath.Text;
+            m_setting.strName = label_VideoName.Text;
+            m_setting.iVolume = metroTrackBar_Volume.Value;
+            m_setting.iBrightness = metroTrackBar_Brightness.Value;
+            m_setting.bRandom = m_bRandom;
+
+            m_setting.SaveToFile(m_strSettingFile);
+        }
+
+        /// <summary>
+        /// Setting 파일 적용
+        /// </summary>
+        protected void ApplySetting()
+        {
+            m_strFilePath = m_setting.strPath;
+            label_VideoPath.Text = m_setting.strPath;
+            label_VideoName.Text = m_setting.strName;
+
+            m_iVolume = m_setting.iVolume;
+            metroTrackBar_Volume.Value = m_setting.iVolume;
+
+            m_iBrightness = m_setting.iBrightness;
+            metroTrackBar_Brightness.Value = m_setting.iBrightness;
+
+            m_bRandom = m_setting.bRandom;
+
+            ObjectActive(m_bRandom);
+        }
+
+        #endregion
+
 
         #region Button Event
 
@@ -380,6 +528,8 @@ namespace VideoWallpapers
                             m_strFilePath        = strPath;
                             label_VideoPath.Text = strPath;
                             label_VideoName.Text = strName;
+
+                            SaveSetting();
 
                             Play();
                         }
@@ -456,6 +606,10 @@ namespace VideoWallpapers
             label_VideoPath.Text = "";
             label_VideoName.Text = "None";
 
+            m_setting.strPath = "";
+            m_setting.strName = "None";
+            m_setting.SaveToFile(m_strSettingFile);
+
             g_program.m_Form2.Stop();
         }
 
@@ -467,6 +621,30 @@ namespace VideoWallpapers
         private void MetroButton_Hide_Click(object sender, EventArgs e)
         {
             HideWindow();
+        }
+
+        /// <summary>
+        /// 출력 모니터 변경
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroButton_Monitor_Click(object sender, EventArgs e)
+        {
+            // 화면 전환
+            g_program.m_Form2.Monitor++;
+            g_program.m_Form3.Monitor++;
+
+            // 전환에 성공하였으면 설정을 저장하고 그렇지 않으면 정지
+            if (g_program.m_Form2.Fixed && g_program.m_Form3.Fixed)
+            {
+                m_setting.iMonitor = g_program.m_Form2.Monitor;
+                m_setting.SaveToFile(m_strSettingFile);
+            }
+            else
+            {
+                // MessageBox.Show("출력 모니터를 변경할 수 없습니다.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Form4.DialogCustom("Error!", "Can not Change Output Monitor!");
+            }
         }
 
         #endregion
@@ -482,6 +660,9 @@ namespace VideoWallpapers
         {
             m_iVolume = metroTrackBar_Volume.Value;
             // metroProgressBar_Volume.Value = Convert.ToInt32(metroTrackBar_Volume.Value * 0.98) + 2;
+
+            m_setting.iVolume = metroTrackBar_Volume.Value;
+            m_setting.SaveToFile(m_strSettingFile);
         }
 
         /// <summary>
@@ -495,6 +676,9 @@ namespace VideoWallpapers
             // metroProgressBar_Brightness.Value = Convert.ToInt32(metroTrackBar_Brightness.Value * 0.98) + 2;
 
             SetBrightness(m_iBrightness);
+
+            m_setting.iBrightness = metroTrackBar_Brightness.Value;
+            m_setting.SaveToFile(m_strSettingFile);
         }
 
         #endregion
@@ -519,6 +703,62 @@ namespace VideoWallpapers
         private void M_notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ShowWindow();
+        }
+
+        #endregion
+
+        #region CheckBox Event
+
+        /// <summary>
+        /// 랜덤 재생
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroCheckBox_Random_Click(object sender, EventArgs e)
+        {
+            // 체크박스를 풀어도 목록 리스트가 새로 정렬이 되지 않음 (랜덤이 된 리스트를 그대로 가져옴)
+
+            // 해결방안 1. axWindowsMediaPlayer의 메모리를 해제했다가 다시 할당
+            // → 실패 (참조 오류 발생, 컨트롤을 Form Design에서 생성하면 안됨, 좀 더 확인이 필요)
+
+            // 해결방안 2. Form2의 메모리를 해제했다가 다시 할당
+            // → 실패 (Form3도 같이 진행되어야만 가능하나 Form3는 ApplicationContext의 상속을 받고 있어 안됨)
+
+            // 해결방안 3. Loop와 Shuffle은 서로 다른 기능
+            // → 성공 (Loop는 영상 또는 목록의 반복 재생을 설정하고 Shuffle은 목록 재생을 랜덤으로 할지를 설정)
+
+            m_bRandom = metroCheckBox_Random.Checked ? true : false;
+
+            m_setting.bRandom = m_bRandom;
+            m_setting.SaveToFile(m_strSettingFile);
+
+            Play();
+        }
+
+        /// <summary>
+        /// 시작 프로그램 등록
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroCheckBox_StartupPrograms_Click(object sender, EventArgs e)
+        {
+            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
+            {
+                if (metroCheckBox_StartupPrograms.Checked)
+                {
+                    key.SetValue(constStrApplication, Application.ExecutablePath.ToString());
+                    label_StartOn.Visible = true;
+                    label_StartOff.Visible = false;
+                    // MessageBox.Show("등록 성공!", "시작 프로그램 등록", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    key.DeleteValue(constStrApplication, false);
+                    label_StartOn.Visible = false;
+                    label_StartOff.Visible = true;
+                    // MessageBox.Show("해제 성공!", "시작 프로그램 해제", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
 
         #endregion

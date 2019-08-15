@@ -50,7 +50,7 @@ namespace VideoWallpapers
 
                 if (ptrWorkerW == IntPtr.Zero)
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                 }
                 else
                     break;

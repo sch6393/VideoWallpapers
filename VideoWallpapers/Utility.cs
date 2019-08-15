@@ -64,14 +64,21 @@ namespace VideoWallpapers
                 return true;
             };
 
-            g_staticMONITORINFO = new[]
+            if (WinApi.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, callback, 0))
             {
-                new WinApi.MONITORINFO()
+                g_staticMONITORINFO = listMONITORINFO.ToArray();
+            }
+            else
+            {
+                g_staticMONITORINFO = new[]
                 {
-                    rcMonitor = Screen.PrimaryScreen.Bounds,
-                    rcWork = Screen.PrimaryScreen.WorkingArea,
-                }
-            };
+                    new WinApi.MONITORINFO()
+                    {
+                        rcMonitor = Screen.PrimaryScreen.Bounds,
+                        rcWork = Screen.PrimaryScreen.WorkingArea,
+                    }
+                };
+            }
         }
 
         public static void FillMonitor(Form form, WinApi.MONITORINFO monitorInfo)

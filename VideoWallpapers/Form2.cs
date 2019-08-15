@@ -15,9 +15,17 @@ namespace VideoWallpapers
 {
     public partial class Form2 : Form
     {
+        /// <summary>
+        /// Background 변수
+        /// </summary>
+        private bool m_bFixed = false;
+        private int m_iMonitor = 0;
+
         public Form2()
         {
             InitializeComponent();
+
+            Monitor = m_iMonitor;
 
             Background();
         }
@@ -36,25 +44,62 @@ namespace VideoWallpapers
 
         protected bool Background()
         {
-            Form1.m_bFixed = VideoWallpapers.Wallpaper.Background(this.Handle);
+            m_bFixed = VideoWallpapers.Wallpaper.Background(this.Handle);
 
-            if (Form1.m_bFixed)
+            if (m_bFixed)
             {
-                Utility.FillMonitor(this, ScreenInfo);
+                Utility.FillMonitor(this, MonitorInfo);
             }
 
-            return Form1.m_bFixed;
+            return m_bFixed;
         }
 
-        public WinApi.MONITORINFO ScreenInfo
+        public WinApi.MONITORINFO MonitorInfo
         {
             get
             {
+                if (Monitor < Utility.g_staticMONITORINFO.Length)
+                    return Utility.g_staticMONITORINFO[Monitor];
+
                 return new WinApi.MONITORINFO()
                 {
                     rcMonitor = Screen.PrimaryScreen.Bounds,
                     rcWork = Screen.PrimaryScreen.WorkingArea,
                 };
+            }
+        }
+
+        public bool Fixed
+        {
+            get
+            {
+                return m_bFixed;
+            }
+        }
+
+        public int Monitor
+        {
+            get
+            {
+                return m_iMonitor;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    value = 0;
+                }
+                else if (value >= Screen.AllScreens.Length)
+                {
+                    value = 0;
+                }
+
+                if (m_iMonitor != value)
+                {
+                    m_iMonitor = value;
+
+                    Background();
+                }
             }
         }
 
@@ -69,6 +114,15 @@ namespace VideoWallpapers
             /// SetCurrentEffectPreset();
 
             axWindowsMediaPlayer.settings.setMode("Loop", true);
+
+            if (Form1.m_bRandom)
+            {
+                axWindowsMediaPlayer.settings.setMode("Shuffle", true);
+            }
+            else
+            {
+                axWindowsMediaPlayer.settings.setMode("Shuffle", false);
+            }
 
             axWindowsMediaPlayer.URL = Form1.m_strFilePath;
 
