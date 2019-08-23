@@ -306,12 +306,12 @@ namespace VideoWallpapers
             try
             {
                 // PrivateFontCollection에 폰트 메모리 추가
-                PrivateFontCollection pivateFontCollection = new PrivateFontCollection();
+                PrivateFontCollection privateFontCollection = new PrivateFontCollection();
 
                 // 출력 디렉토리로 복사 설정 = 복사
-                pivateFontCollection.AddFontFile(Application.StartupPath + @"\Font\Userfont.ttf");
+                privateFontCollection.AddFontFile(Application.StartupPath + @"\Font\Userfont.ttf");
 
-                m_font = new Font(pivateFontCollection.Families[0], 10, FontStyle.Regular);
+                m_font = new Font(privateFontCollection.Families[0], 10, FontStyle.Regular);
 
                 FontSet(m_font);
             }
@@ -645,6 +645,17 @@ namespace VideoWallpapers
                 // MessageBox.Show("출력 모니터를 변경할 수 없습니다.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Form4.DialogCustom("Error!", "Can not Change Output Monitor!");
             }
+        }
+
+        /// <summary>
+        /// 도움말
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroButton_Help_Click(object sender, EventArgs e)
+        {
+            Form5 form5 = new Form5();
+            form5.ShowDialog();
         }
 
         #endregion

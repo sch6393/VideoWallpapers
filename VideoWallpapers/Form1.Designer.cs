@@ -57,6 +57,8 @@
             this.metroCheckBox_StartupPrograms = new MetroFramework.Controls.MetroCheckBox();
             this.metroButton_Monitor = new MetroFramework.Controls.MetroButton();
             this.label_Monitor = new System.Windows.Forms.Label();
+            this.metroButton_Help = new MetroFramework.Controls.MetroButton();
+            this.label_Help = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label_Brightness
@@ -380,10 +382,35 @@
             this.label_Monitor.TabIndex = 0;
             this.label_Monitor.Text = "Multi Monitor";
             // 
+            // metroButton_Help
+            // 
+            this.metroButton_Help.Highlight = true;
+            this.metroButton_Help.Location = new System.Drawing.Point(234, 310);
+            this.metroButton_Help.Name = "metroButton_Help";
+            this.metroButton_Help.Size = new System.Drawing.Size(330, 23);
+            this.metroButton_Help.TabIndex = 13;
+            this.metroButton_Help.Text = "Help";
+            this.metroButton_Help.UseSelectable = true;
+            this.metroButton_Help.Click += new System.EventHandler(this.MetroButton_Help_Click);
+            // 
+            // label_Help
+            // 
+            this.label_Help.AutoSize = true;
+            this.label_Help.BackColor = System.Drawing.Color.Transparent;
+            this.label_Help.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_Help.ForeColor = System.Drawing.Color.Black;
+            this.label_Help.Location = new System.Drawing.Point(26, 315);
+            this.label_Help.Name = "label_Help";
+            this.label_Help.Size = new System.Drawing.Size(34, 15);
+            this.label_Help.TabIndex = 0;
+            this.label_Help.Text = "Help";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(590, 325);
+            this.ClientSize = new System.Drawing.Size(590, 355);
+            this.Controls.Add(this.metroButton_Help);
+            this.Controls.Add(this.label_Help);
             this.Controls.Add(this.label_Monitor);
             this.Controls.Add(this.metroButton_Monitor);
             this.Controls.Add(this.label_StartOn);
@@ -453,5 +480,7 @@
         private MetroFramework.Controls.MetroCheckBox metroCheckBox_StartupPrograms;
         private MetroFramework.Controls.MetroButton metroButton_Monitor;
         private System.Windows.Forms.Label label_Monitor;
+        private MetroFramework.Controls.MetroButton metroButton_Help;
+        private System.Windows.Forms.Label label_Help;
     }
 }
