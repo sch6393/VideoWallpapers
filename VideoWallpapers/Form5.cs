@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
 
+using MetroFramework;
 using MetroFramework.Forms;
 
 namespace VideoWallpapers
@@ -40,6 +41,12 @@ namespace VideoWallpapers
 
             FontCollection();
             FontSet(m_font);
+
+            StyleManager = m_metroStyleManager;
+
+            StyleMode();
+
+            label5.Text = "Version " + Application.ProductVersion.Substring(0, 3);
         }
 
         #region Font
@@ -79,17 +86,16 @@ namespace VideoWallpapers
         /// <param name="font"></param>
         protected void FontSet(Font font)
         {
-            // label_Title.Font = new Font(m_fontFamily, 16, FontStyle.Regular);
+            label1.Font = new Font(m_fontFamily, 10f, FontStyle.Bold);
+            label2.Font = new Font(m_fontFamily, 10f, FontStyle.Regular);
+            label3.Font = new Font(m_fontFamily, 10f, FontStyle.Bold);
+            label4.Font = new Font(m_fontFamily, 10f, FontStyle.Bold);
+            label5.Font = new Font(m_fontFamily, 10f, FontStyle.Bold);
 
-            label1.Font = new Font(m_fontFamily, 10, FontStyle.Bold);
-            label2.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
-            label3.Font = new Font(m_fontFamily, 10, FontStyle.Bold);
-            label4.Font = new Font(m_fontFamily, 10, FontStyle.Bold);
-
-            linkLabel1.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
-            linkLabel2.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
-            linkLabel3.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
-            linkLabel4.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+            linkLabel1.Font = new Font(m_fontFamily, 10f, FontStyle.Regular);
+            linkLabel2.Font = new Font(m_fontFamily, 10f, FontStyle.Regular);
+            linkLabel3.Font = new Font(m_fontFamily, 10f, FontStyle.Regular);
+            linkLabel4.Font = new Font(m_fontFamily, 10f, FontStyle.Regular);
         }
 
         /// <summary>
@@ -136,6 +142,27 @@ namespace VideoWallpapers
         private void LinkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/sch6393");
+        }
+
+        /// <summary>
+        /// Style Mode
+        /// </summary>
+        protected void StyleMode()
+        {
+            MetroThemeStyle metroThemeStyle = Form1.m_bStyle ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+
+            m_metroStyleManager.Theme = metroThemeStyle;
+
+            foreach (Control control in Controls)
+            {
+                if (typeof(Label) == control.GetType())
+                {
+                    (control as Label).ForeColor = (metroThemeStyle == MetroThemeStyle.Light) ? Color.Black : Color.White;
+                }
+            }
+
+            // 오브젝트가 자동으로 업데이트 되지 않음
+            Refresh();
         }
     }
 }

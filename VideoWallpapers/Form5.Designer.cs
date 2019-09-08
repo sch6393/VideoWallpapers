@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -37,6 +38,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
+            this.m_metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.m_metroStyleManager)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -59,9 +62,10 @@
             this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(23, 95);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(539, 15);
+            this.label2.Size = new System.Drawing.Size(617, 15);
             this.label2.TabIndex = 0;
-            this.label2.Text = ".NET Framework Ver 4.5.2 or Later, Windows Media Player 12, Windows 10 x64 && Active Aero Peek";
+            this.label2.Text = ".NET Framework Ver 4.5.2 or Later, Windows Media Player 12, Windows 10 x64 && Act" +
+    "ive Aero Peek";
             // 
             // linkLabel3
             // 
@@ -146,7 +150,11 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(77, 15);
             this.label5.TabIndex = 0;
-            this.label5.Text = "Version 1.3";
+            this.label5.Text = "Version 1.4";
+            // 
+            // m_metroStyleManager
+            // 
+            this.m_metroStyleManager.Owner = null;
             // 
             // Form5
             // 
@@ -167,6 +175,7 @@
             this.Name = "Form5";
             this.Resizable = false;
             this.Text = "Help";
+            ((System.ComponentModel.ISupportInitialize)(this.m_metroStyleManager)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -183,5 +192,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.LinkLabel linkLabel4;
         private System.Windows.Forms.Label label5;
+        private MetroFramework.Components.MetroStyleManager m_metroStyleManager;
     }
 }

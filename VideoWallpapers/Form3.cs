@@ -127,11 +127,11 @@ namespace VideoWallpapers
             get
             {
                 // Turn on WS_EX_TOOLWINDOW style bit
-                CreateParams cp = base.CreateParams;
+                CreateParams createParams = base.CreateParams;
 
-                cp.ExStyle |= 0x80;
+                createParams.ExStyle |= 0x80;
 
-                return cp;
+                return createParams;
             }
         }
 

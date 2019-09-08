@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form4));
             this.label_Message = new System.Windows.Forms.Label();
             this.metroButton = new MetroFramework.Controls.MetroButton();
+            this.m_metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.m_metroStyleManager)).BeginInit();
             this.SuspendLayout();
             // 
             // label_Message
@@ -56,6 +59,11 @@
             this.metroButton.UseSelectable = true;
             this.metroButton.Click += new System.EventHandler(this.metroButton_Click);
             // 
+            // m_metroStyleManager
+            // 
+            this.m_metroStyleManager.Owner = null;
+            this.m_metroStyleManager.Style = MetroFramework.MetroColorStyle.Red;
+            // 
             // Form4
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -71,6 +79,7 @@
             this.Style = MetroFramework.MetroColorStyle.Red;
             this.Text = "Title";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form4_FormClosed);
+            ((System.ComponentModel.ISupportInitialize)(this.m_metroStyleManager)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -80,5 +89,6 @@
 
         private System.Windows.Forms.Label label_Message;
         private MetroFramework.Controls.MetroButton metroButton;
+        private MetroFramework.Components.MetroStyleManager m_metroStyleManager;
     }
 }
