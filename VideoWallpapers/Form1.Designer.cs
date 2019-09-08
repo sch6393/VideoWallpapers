@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
+using MetroFramework;
 using MetroFramework.Controls;
 
 namespace VideoWallpapers
@@ -86,9 +87,17 @@ namespace VideoWallpapers
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.volumeSetToolStripMenuItem = new ToolStripTrackbarItem();
-            this.brightnessSetToolStripMenuItem = new ToolStripTrackbarItem();
+            this.label_StyleMode = new System.Windows.Forms.Label();
+            this.m_metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
+            this.metroButton_Light = new MetroFramework.Controls.MetroButton();
+            this.metroButton_Dark = new MetroFramework.Controls.MetroButton();
+
+            // ConvtextMenuStrip TrackBar
+            this.toolStripMenuItem_VolumeTrackBar = new ToolStripTrackbarItem();
+            this.toolStripMenuItem_BrightnessTrackBar = new ToolStripTrackbarItem();
+
             this.m_metroContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.m_metroStyleManager)).BeginInit();
             this.SuspendLayout();
             // 
             // label_Brightness
@@ -186,11 +195,10 @@ namespace VideoWallpapers
             this.metroTrackBar_Brightness.MouseWheelBarPartitions = 18;
             this.metroTrackBar_Brightness.Name = "metroTrackBar_Brightness";
             this.metroTrackBar_Brightness.Size = new System.Drawing.Size(330, 23);
-            this.metroTrackBar_Brightness.Style = MetroFramework.MetroColorStyle.Red;
             this.metroTrackBar_Brightness.TabIndex = 2;
-            this.metroTrackBar_Brightness.Theme = MetroFramework.MetroThemeStyle.Light;
             this.metroTrackBar_Brightness.UseCustomBackColor = true;
             this.metroTrackBar_Brightness.ValueChanged += new System.EventHandler(this.metroTrackBar_Brightness_ValueChanged);
+            this.metroTrackBar_Brightness.MouseEnter += new System.EventHandler(this.metroTrackBar_Brightness_MouseEnter);
             // 
             // metroTrackBar_Volume
             // 
@@ -199,12 +207,11 @@ namespace VideoWallpapers
             this.metroTrackBar_Volume.Location = new System.Drawing.Point(234, 100);
             this.metroTrackBar_Volume.Name = "metroTrackBar_Volume";
             this.metroTrackBar_Volume.Size = new System.Drawing.Size(330, 23);
-            this.metroTrackBar_Volume.Style = MetroFramework.MetroColorStyle.Red;
             this.metroTrackBar_Volume.TabIndex = 1;
-            this.metroTrackBar_Volume.Theme = MetroFramework.MetroThemeStyle.Light;
             this.metroTrackBar_Volume.UseCustomBackColor = true;
             this.metroTrackBar_Volume.Value = 0;
             this.metroTrackBar_Volume.ValueChanged += new System.EventHandler(this.metroTrackBar_Volume_ValueChanged);
+            this.metroTrackBar_Volume.MouseEnter += new System.EventHandler(this.metroTrackBar_Volume_MouseEnter);
             // 
             // metroButton_FileOpen
             // 
@@ -307,7 +314,7 @@ namespace VideoWallpapers
             this.label_RandomOn.AutoSize = true;
             this.label_RandomOn.BackColor = System.Drawing.Color.Transparent;
             this.label_RandomOn.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_RandomOn.ForeColor = System.Drawing.Color.LightSeaGreen;
+            this.label_RandomOn.ForeColor = System.Drawing.Color.DeepSkyBlue;
             this.label_RandomOn.Location = new System.Drawing.Point(254, 255);
             this.label_RandomOn.Name = "label_RandomOn";
             this.label_RandomOn.Size = new System.Drawing.Size(25, 15);
@@ -321,7 +328,7 @@ namespace VideoWallpapers
             this.label_RandomOff.BackColor = System.Drawing.Color.Transparent;
             this.label_RandomOff.Enabled = false;
             this.label_RandomOff.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_RandomOff.ForeColor = System.Drawing.Color.Gray;
+            this.label_RandomOff.ForeColor = System.Drawing.Color.Black;
             this.label_RandomOff.Location = new System.Drawing.Point(254, 255);
             this.label_RandomOff.Name = "label_RandomOff";
             this.label_RandomOff.Size = new System.Drawing.Size(27, 15);
@@ -346,7 +353,7 @@ namespace VideoWallpapers
             this.label_StartOn.AutoSize = true;
             this.label_StartOn.BackColor = System.Drawing.Color.Transparent;
             this.label_StartOn.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_StartOn.ForeColor = System.Drawing.Color.LightSeaGreen;
+            this.label_StartOn.ForeColor = System.Drawing.Color.DeepSkyBlue;
             this.label_StartOn.Location = new System.Drawing.Point(254, 285);
             this.label_StartOn.Name = "label_StartOn";
             this.label_StartOn.Size = new System.Drawing.Size(25, 15);
@@ -359,7 +366,7 @@ namespace VideoWallpapers
             this.label_StartOff.AutoSize = true;
             this.label_StartOff.BackColor = System.Drawing.Color.Transparent;
             this.label_StartOff.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_StartOff.ForeColor = System.Drawing.Color.Gray;
+            this.label_StartOff.ForeColor = System.Drawing.Color.Black;
             this.label_StartOff.Location = new System.Drawing.Point(254, 285);
             this.label_StartOff.Name = "label_StartOff";
             this.label_StartOff.Size = new System.Drawing.Size(27, 15);
@@ -437,7 +444,6 @@ namespace VideoWallpapers
             // 
             // m_metroContextMenu
             // 
-            this.m_metroContextMenu.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.m_metroContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.videoNameToolStripMenuItem,
             this.toolStripSeparator1,
@@ -477,7 +483,7 @@ namespace VideoWallpapers
             // volumeToolStripMenuItem
             // 
             this.volumeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.volumeSetToolStripMenuItem});
+            this.toolStripMenuItem_VolumeTrackBar});
             this.volumeToolStripMenuItem.Name = "volumeToolStripMenuItem";
             this.volumeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.volumeToolStripMenuItem.Text = "Volume";
@@ -485,7 +491,7 @@ namespace VideoWallpapers
             // brightnessToolStripMenuItem
             // 
             this.brightnessToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.brightnessSetToolStripMenuItem});
+            this.toolStripMenuItem_BrightnessTrackBar});
             this.brightnessToolStripMenuItem.Name = "brightnessToolStripMenuItem";
             this.brightnessToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.brightnessToolStripMenuItem.Text = "Brightness";
@@ -586,29 +592,73 @@ namespace VideoWallpapers
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
-            // volumeSetToolStripMenuItem
+            // label_StyleMode
             // 
-            this.volumeSetToolStripMenuItem.Name = "volumeSetToolStripMenuItem";
-            this.volumeSetToolStripMenuItem.Size = new System.Drawing.Size(150, 15);
-            this.volumeSetToolStripMenuItem.Text = "volumeSet";
-            this.volumeSetToolStripMenuItem.ValueChanged += VolumeSetToolStripMenuItem_ValueChanged;
-            this.volumeSetToolStripMenuItem.Minimum = 0;
-            this.volumeSetToolStripMenuItem.Maximum = 100;
+            this.label_StyleMode.AutoSize = true;
+            this.label_StyleMode.BackColor = System.Drawing.Color.Transparent;
+            this.label_StyleMode.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_StyleMode.ForeColor = System.Drawing.Color.Black;
+            this.label_StyleMode.Location = new System.Drawing.Point(26, 345);
+            this.label_StyleMode.Name = "label_StyleMode";
+            this.label_StyleMode.Size = new System.Drawing.Size(75, 15);
+            this.label_StyleMode.TabIndex = 0;
+            this.label_StyleMode.Text = "Style Mode";
             // 
-            // brightnessSetToolStripMenuItem
+            // m_metroStyleManager
             // 
-            this.brightnessSetToolStripMenuItem.Name = "brightnessSetToolStripMenuItem";
-            this.brightnessSetToolStripMenuItem.Size = new System.Drawing.Size(100, 15);
-            this.brightnessSetToolStripMenuItem.Text = "brightnessSet";
-            this.brightnessSetToolStripMenuItem.ValueChanged += BrightnessSetToolStripMenuItem_ValueChanged;
-            this.brightnessSetToolStripMenuItem.Minimum = 5;
-            this.brightnessSetToolStripMenuItem.Maximum = 50;
-            this.brightnessSetToolStripMenuItem.MouseWheelBarPartitions = 18;
+            this.m_metroStyleManager.Owner = null;
+            // 
+            // metroButton_Light
+            // 
+            this.metroButton_Light.Highlight = true;
+            this.metroButton_Light.Location = new System.Drawing.Point(234, 340);
+            this.metroButton_Light.Name = "metroButton_Light";
+            this.metroButton_Light.Size = new System.Drawing.Size(162, 23);
+            this.metroButton_Light.TabIndex = 14;
+            this.metroButton_Light.Text = "Light";
+            this.metroButton_Light.UseSelectable = true;
+            this.metroButton_Light.Click += new System.EventHandler(this.MetroButton_Light_Click);
+            // 
+            // metroButton_Dark
+            // 
+            this.metroButton_Dark.Highlight = true;
+            this.metroButton_Dark.Location = new System.Drawing.Point(402, 340);
+            this.metroButton_Dark.Name = "metroButton_Dark";
+            this.metroButton_Dark.Size = new System.Drawing.Size(162, 23);
+            this.metroButton_Dark.TabIndex = 15;
+            this.metroButton_Dark.Text = "Dark";
+            this.metroButton_Dark.UseSelectable = true;
+            this.metroButton_Dark.Click += new System.EventHandler(this.MetroButton_Dark_Click);
+
+
+
+            // 
+            // toolStripMenuItem_VolumeTrackBar
+            // 
+            this.toolStripMenuItem_VolumeTrackBar.Name = "toolStripMenuItem_VolumeTrackBar";
+            this.toolStripMenuItem_VolumeTrackBar.Size = new System.Drawing.Size(100, 15);
+            this.toolStripMenuItem_VolumeTrackBar.ValueChanged += ToolStripMenuItem_VolumeTrackBar_ValueChanged;
+            this.toolStripMenuItem_VolumeTrackBar.MouseEnter += ToolStripMenuItem_VolumeTrackBar_MouseEnter;
+            this.toolStripMenuItem_VolumeTrackBar.Minimum = 0;
+            this.toolStripMenuItem_VolumeTrackBar.Maximum = 100;
+            // 
+            // toolStripMenuItem_BrightnessTrackBar
+            // 
+            this.toolStripMenuItem_BrightnessTrackBar.Name = "toolStripMenuItem_BrightnessTrackBar";
+            this.toolStripMenuItem_BrightnessTrackBar.Size = new System.Drawing.Size(100, 15);
+            this.toolStripMenuItem_BrightnessTrackBar.ValueChanged += ToolStripMenuItem_BrightnessTrackBar_ValueChanged;
+            this.toolStripMenuItem_BrightnessTrackBar.MouseEnter += ToolStripMenuItem_BrightnessTrackBar_MouseEnter;
+            this.toolStripMenuItem_BrightnessTrackBar.Minimum = 5;
+            this.toolStripMenuItem_BrightnessTrackBar.Maximum = 50;
+            this.toolStripMenuItem_BrightnessTrackBar.MouseWheelBarPartitions = 18;
+
+
+
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(590, 355);
+            this.ClientSize = new System.Drawing.Size(590, 385);
             this.Controls.Add(this.metroButton_Help);
             this.Controls.Add(this.label_Help);
             this.Controls.Add(this.label_Monitor);
@@ -637,6 +687,9 @@ namespace VideoWallpapers
             this.Controls.Add(this.label_Volume);
             this.Controls.Add(this.label_Name);
             this.Controls.Add(this.label_VideoPath);
+            this.Controls.Add(this.label_StyleMode);
+            this.Controls.Add(this.metroButton_Light);
+            this.Controls.Add(this.metroButton_Dark);
             this.Font = new System.Drawing.Font("나눔고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -647,7 +700,9 @@ namespace VideoWallpapers
             this.Text = "VideoWallpapers";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.m_metroContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.m_metroStyleManager)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -658,15 +713,30 @@ namespace VideoWallpapers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void VolumeSetToolStripMenuItem_ValueChanged(object sender, EventArgs e)
+        private void ToolStripMenuItem_VolumeTrackBar_ValueChanged(object sender, EventArgs e)
         {
-            m_iVolume = volumeSetToolStripMenuItem.Value;
-            // metroProgressBar_Volume.Value = Convert.ToInt32(metroTrackBar_Volume.Value * 0.98) + 2;
+            if (m_bTrackBarVolume)
+            {
+                m_iVolume = toolStripMenuItem_VolumeTrackBar.Value;
+                metroTrackBar_Volume.Value = m_iVolume;
 
-            metroTrackBar_Volume.Value = m_iVolume;
+                m_setting.iVolume = m_iVolume;
+                m_setting.SaveToFile(m_strSettingFile);
+            }
+            else
+            {
 
-            m_setting.iVolume = m_iVolume;
-            m_setting.SaveToFile(m_strSettingFile);
+            }
+        }
+
+        /// <summary>
+        /// Mouse Enter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItem_VolumeTrackBar_MouseEnter(object sender, EventArgs e)
+        {
+            m_bTrackBarVolume = true;
         }
 
         /// <summary>
@@ -674,17 +744,27 @@ namespace VideoWallpapers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BrightnessSetToolStripMenuItem_ValueChanged(object sender, EventArgs e)
+        private void ToolStripMenuItem_BrightnessTrackBar_ValueChanged(object sender, EventArgs e)
         {
-            m_iBrightness = brightnessSetToolStripMenuItem.Value;
-            // metroProgressBar_Brightness.Value = Convert.ToInt32(metroTrackBar_Brightness.Value * 0.98) + 2;
+            if (m_bTrackBarBrightness)
+            {
+                m_iBrightness = toolStripMenuItem_BrightnessTrackBar.Value;
+                metroTrackBar_Brightness.Value = m_iBrightness;
 
-            metroTrackBar_Brightness.Value = m_iBrightness;
+                SetBrightness(m_iBrightness);
 
-            SetBrightness(m_iBrightness);
+                m_setting.iBrightness = m_iBrightness;
+                m_setting.SaveToFile(m_strSettingFile);
+            }
+            else
+            {
 
-            m_setting.iBrightness = m_iBrightness;
-            m_setting.SaveToFile(m_strSettingFile);
+            }
+        }
+
+        private void ToolStripMenuItem_BrightnessTrackBar_MouseEnter(object sender, EventArgs e)
+        {
+            m_bTrackBarBrightness = true;
         }
 
         #endregion
@@ -736,9 +816,14 @@ namespace VideoWallpapers
         private System.Windows.Forms.ToolStripMenuItem brightnessToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem volumeToolStripMenuItem;
-        private ToolStripTrackbarItem volumeSetToolStripMenuItem;
-        private ToolStripTrackbarItem brightnessSetToolStripMenuItem;
-        // private ToolStripTrackbarItem testToolStripMenuItem;
+        private System.Windows.Forms.Label label_StyleMode;
+        private MetroFramework.Components.MetroStyleManager m_metroStyleManager;
+        private MetroFramework.Controls.MetroButton metroButton_Light;
+        private MetroFramework.Controls.MetroButton metroButton_Dark;
+
+        // ConvtextMenuStrip TrackBar
+        private ToolStripTrackbarItem toolStripMenuItem_VolumeTrackBar;
+        private ToolStripTrackbarItem toolStripMenuItem_BrightnessTrackBar;
     }
 
     /// <summary>
@@ -766,8 +851,33 @@ namespace VideoWallpapers
         {
             MetroTrackBar metroTrackBar = new MetroTrackBar();
             metroTrackBar.AutoSize = false;
+
             return metroTrackBar;
         }
+
+        public MetroThemeStyle Theme
+        {
+            get
+            {
+                return MetroTrackBar.Theme;
+            }
+            set
+            {
+                MetroTrackBar.Theme = value;
+            }
+        }
+
+        //public MetroStyleManager StyleManager
+        //{
+        //    get
+        //    {
+        //        return MetroTrackBar.StyleManager;
+        //    }
+        //    set
+        //    {
+        //        MetroTrackBar.StyleManager = value;
+        //    }
+        //}
 
         public int Minimum
         {

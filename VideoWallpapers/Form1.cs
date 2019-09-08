@@ -11,6 +11,7 @@ using System.Windows.Forms;
 // 추가
 using System.Drawing.Text;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,6 +19,8 @@ using System.Threading;
 using Microsoft.Win32;
 
 // NuGet
+using MetroFramework;
+using MetroFramework.Controls;
 using MetroFramework.Forms;
 
 namespace VideoWallpapers
@@ -56,10 +59,12 @@ namespace VideoWallpapers
         public static int m_iVolume = 0;
         public static bool m_bRandom = false;
 
+        protected int m_iVolume2 = 0;
+
         /// <summary>
         /// 밝기 값
         /// </summary>
-        public static int m_iBrightness = 50;
+        protected int m_iBrightness = 50;
 
         /// <summary>
         /// Background 변수들
@@ -73,6 +78,31 @@ namespace VideoWallpapers
         /// protected readonly string m_ro_strSettingFile = Path.Combine(Application.StartupPath, constStrApplication + ".dat");
         protected string m_strSettingFile = Path.Combine(Application.StartupPath, constStrApplication + ".dat");
         protected Setting m_setting = new Setting();
+
+        /// <summary>
+        /// Style Mode
+        /// false : Light, true : Dark
+        /// </summary>
+        public static bool m_bStyle = false;
+
+        /// <summary>
+        /// 투명 라벨
+        /// </summary>
+        protected TransparentLabel m_transparentLabel = new TransparentLabel();
+        // protected TransparentLabelTop m_transparentLabelTop = new TransparentLabelTop();
+
+        /// <summary>
+        /// true : 증가, false : 감소
+        /// </summary>
+        protected bool m_bTransparent = false;
+        public static int m_iTransparent = 255;
+
+
+        /// <summary>
+        /// true : toolStripMenuItem, false : metroTrackBar
+        /// </summary>
+        public bool m_bTrackBarVolume = false;
+        public bool m_bTrackBarBrightness = false;
 
         /// <summary>
         /// 생성자
@@ -97,6 +127,9 @@ namespace VideoWallpapers
 
             FontCollection();
             FontSet(m_font);
+
+            // StyleManager
+            StyleManager = m_metroStyleManager;
         }
 
         /// <summary>
@@ -123,6 +156,9 @@ namespace VideoWallpapers
 
             // metroCheckBox_Random.Checked = m_bRandom ? true : false;
             // randomPlayToolStripMenuItem.Checked = m_bRandom ? true : false;
+
+            // Style Mode
+            StyleMode();
 
             // 모니터 출력
             if (m_setting.iMonitor != 0)
@@ -182,6 +218,16 @@ namespace VideoWallpapers
             {
                 Play();
             }
+        }
+
+        /// <summary>
+        /// 폼 로딩이 끝난 후
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            VersionCheck();
         }
 
         /// <summary>
@@ -302,6 +348,12 @@ namespace VideoWallpapers
             label_StartOff.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
 
             label_Monitor.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            label_Help.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            label_StyleMode.Font = new Font(m_fontFamily, 10, FontStyle.Regular);
+
+            m_metroContextMenu.Font = new Font(m_fontFamily, 10, FontStyle.Regular); ;
         }
 
         /// <summary>
@@ -675,26 +727,171 @@ namespace VideoWallpapers
             Application.Exit();
         }
 
-
-        protected void Volume(object objSender)
+        /// <summary>
+        /// Style Mode
+        /// </summary>
+        protected void StyleMode()
         {
-            if (objSender.Equals(metroTrackBar_Volume))
-            {
-                m_iVolume = metroTrackBar_Volume.Value;
-                // metroProgressBar_Volume.Value = Convert.ToInt32(metroTrackBar_Volume.Value * 0.98) + 2;
+            MetroThemeStyle metroThemeStyle = m_bStyle ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
 
-                volumeSetToolStripMenuItem.Value = m_iVolume;
+            m_metroStyleManager.Theme = metroThemeStyle;
+
+            // Metro 오브젝트가 StyleManager로 변경이 안됨 (???)
+            // Label의 경우 Metro에 속해있지 않아서 직접 색깔을 변경해줘야 함
+            foreach (Control control in Controls)
+            {
+                if (typeof(MetroButton) == control.GetType())
+                {
+                    (control as MetroButton).Theme = metroThemeStyle;
+                }
+                else if (typeof(MetroCheckBox) == control.GetType())
+                {
+                    (control as MetroCheckBox).Theme = metroThemeStyle;
+                }
+                else if (typeof(MetroTrackBar) == control.GetType())
+                {
+                    (control as MetroTrackBar).Theme = metroThemeStyle;
+                }
+                // ContextMenuStrip 적용 안되던 문제 해결
+                // StyleManager의 Theme 기본 값이 Default로 적용되지 않아서 생긴 문제
+                else if (typeof(MetroContextMenu) == control.GetType())
+                {
+                    (control as MetroContextMenu).Theme = metroThemeStyle;
+                }
+                else if (typeof(Label) == control.GetType())
+                {
+                    if (control.Name == label_RandomOn.Name ||
+                        control.Name == label_StartOn.Name)
+                        continue;
+                    else
+                    {
+                        (control as Label).ForeColor = (metroThemeStyle == MetroThemeStyle.Light) ? Color.Black : Color.White;
+                    }
+                }
+            }
+
+            m_setting.bStyle = m_bStyle;
+            m_setting.SaveToFile(m_strSettingFile);
+
+            // 오브젝트가 자동으로 업데이트 되지 않음
+            Refresh();
+        }
+
+        /// <summary>
+        /// 버전 체크
+        /// </summary>
+        protected async void VersionCheck()
+        {
+            using (WebClient webClient = new WebClient())
+            {
+                try
+                {
+                    string strtmp = await webClient.DownloadStringTaskAsync(@"https://raw.githubusercontent.com/sch6393/VideoWallpapers/master/VideoWallpapers/Properties/AssemblyInfo.cs");
+
+                    int iStart = strtmp.LastIndexOf("AssemblyVersion");
+
+                    iStart = strtmp.IndexOf('\"', iStart) + 1;
+                    int iEnd = strtmp.IndexOf('\"', iStart);
+
+                    string strVersion = strtmp.Substring(iStart, iEnd - iStart);
+
+                    if (Version.Parse(strVersion) > Version.Parse(Application.ProductVersion))
+                    {
+                        TransparentLabel();
+
+                        TransparentLabelTop transparentLabelTop = new TransparentLabelTop();
+                        transparentLabelTop.Height = 16;
+                        transparentLabelTop.Width = 151;
+                        transparentLabelTop.Top = 40;
+                        transparentLabelTop.Left = 415;
+                        transparentLabelTop.Text = "TOPTOPTOPTOPTOP";
+                        transparentLabelTop.Font = new Font(m_fontFamily, 10, FontStyle.Bold);
+                        this.Controls.Add(transparentLabelTop);
+                        transparentLabelTop.Visible = true;
+                        transparentLabelTop.BringToFront();
+                        transparentLabelTop.Cursor = Cursors.Hand;
+                        transparentLabelTop.Click += TransparentLabelTop_Click; ;
+
+                        System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                        timer.Interval = 100;
+                        timer.Tick += Timer_Tick;
+                        timer.Enabled = true;
+                    }
+                }
+                catch (WebException )//webEx)
+                {
+                    Form4.DialogCustom("Caution!", "Unable to Check Version Without Internet Connection!");
+                }
+                catch (Exception )//ex)
+                {
+                    Form4.DialogCustom("Error!", "Failed to Version Check!");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 투명 라벨 소멸 & 생성
+        /// </summary>
+        protected void TransparentLabel()
+        {
+            m_transparentLabel.Dispose();
+
+            m_transparentLabel = new TransparentLabel();
+            m_transparentLabel.Height = 16;
+            m_transparentLabel.Width = 151;
+            m_transparentLabel.Top = 40;
+            m_transparentLabel.Left = 415;
+            m_transparentLabel.Text = "New Version Available";
+            m_transparentLabel.Font = new Font(m_fontFamily, 10, FontStyle.Bold);
+            m_transparentLabel.ForeColor = Color.DeepSkyBlue;
+            this.Controls.Add(m_transparentLabel);
+            m_transparentLabel.Visible = true;
+            // m_transparentLabel.BringToFront();
+            // m_transparentLabel.SendToBack();
+            // m_transparentLabel.Cursor = Cursors.Hand;
+            // m_transparentLabel.Click += M_transparentLabel_Click;
+        }
+
+        /// <summary>
+        /// 정주기 (100ms)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (m_bTransparent)
+            {
+                m_iTransparent += 20;
             }
             else
             {
-                m_iVolume = volumeSetToolStripMenuItem.Value;
-                // metroProgressBar_Volume.Value = Convert.ToInt32(metroTrackBar_Volume.Value * 0.98) + 2;
-
-                metroTrackBar_Volume.Value = m_iVolume;
+                m_iTransparent -= 20;
             }
 
-            m_setting.iVolume = m_iVolume;
-            m_setting.SaveToFile(m_strSettingFile);
+            if (m_iTransparent > 235)
+            {
+                m_bTransparent = false;
+            }
+            else if (m_iTransparent < 235 && m_iTransparent > 25)
+            {
+
+            }
+            else if (m_iTransparent < 25)
+            {
+                m_bTransparent = true;
+            }
+
+            TransparentLabel();
+        }
+
+        /// <summary>
+        /// New Version Available 클릭
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TransparentLabelTop_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(@"https://github.com/sch6393/VideoWallpapers/releases");
         }
 
         #endregion
@@ -724,6 +921,7 @@ namespace VideoWallpapers
             m_setting.iVolume = metroTrackBar_Volume.Value;
             m_setting.iBrightness = metroTrackBar_Brightness.Value;
             m_setting.bRandom = m_bRandom;
+            m_setting.bStyle = m_bStyle;
 
             m_setting.SaveToFile(m_strSettingFile);
         }
@@ -744,6 +942,8 @@ namespace VideoWallpapers
             metroTrackBar_Brightness.Value = m_setting.iBrightness;
 
             m_bRandom = m_setting.bRandom;
+
+            m_bStyle = m_setting.bStyle;
 
             ObjectActive(m_bRandom);
         }
@@ -851,6 +1051,30 @@ namespace VideoWallpapers
             Help();
         }
 
+        /// <summary>
+        /// Light
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroButton_Light_Click(object sender, EventArgs e)
+        {
+            m_bStyle = false;
+
+            StyleMode();
+        }
+
+        /// <summary>
+        /// Dark
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroButton_Dark_Click(object sender, EventArgs e)
+        {
+            m_bStyle = true;
+
+            StyleMode();
+        }
+
         #endregion
 
         #region TrackBar Event
@@ -862,13 +1086,28 @@ namespace VideoWallpapers
         /// <param name="e"></param>
         private void metroTrackBar_Volume_ValueChanged(object sender, EventArgs e)
         {
-            m_iVolume = metroTrackBar_Volume.Value;
-            // metroProgressBar_Volume.Value = Convert.ToInt32(metroTrackBar_Volume.Value * 0.98) + 2;
+            if (m_bTrackBarVolume)
+            {
 
-            // volumeSetToolStripMenuItem.Value = m_iVolume;
+            }
+            else
+            {
+                m_iVolume = metroTrackBar_Volume.Value;
+                toolStripMenuItem_VolumeTrackBar.Value = m_iVolume;
 
-            m_setting.iVolume = m_iVolume;
-            m_setting.SaveToFile(m_strSettingFile);
+                m_setting.iVolume = m_iVolume;
+                m_setting.SaveToFile(m_strSettingFile);
+            }
+        }
+
+        /// <summary>
+        /// Mouse Enter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void metroTrackBar_Volume_MouseEnter(object sender, EventArgs e)
+        {
+            m_bTrackBarVolume = false;
         }
 
         /// <summary>
@@ -878,13 +1117,29 @@ namespace VideoWallpapers
         /// <param name="e"></param>
         private void metroTrackBar_Brightness_ValueChanged(object sender, EventArgs e)
         {
-            m_iBrightness = metroTrackBar_Brightness.Value;
-            // metroProgressBar_Brightness.Value = Convert.ToInt32(metroTrackBar_Brightness.Value * 0.98) + 2;
+            if (m_bTrackBarBrightness)
+            {
 
-            SetBrightness(m_iBrightness);
+            }
+            else
+            {
+                m_iBrightness = metroTrackBar_Brightness.Value;
 
-            m_setting.iBrightness = m_iBrightness;
-            m_setting.SaveToFile(m_strSettingFile);
+                SetBrightness(m_iBrightness);
+
+                m_setting.iBrightness = m_iBrightness;
+                m_setting.SaveToFile(m_strSettingFile);
+            }
+        }
+
+        /// <summary>
+        /// Mouse Enter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void metroTrackBar_Brightness_MouseEnter(object sender, EventArgs e)
+        {
+            m_bTrackBarBrightness = false;
         }
 
         #endregion
@@ -927,11 +1182,20 @@ namespace VideoWallpapers
                 methodInfo.Invoke(m_notifyIcon, null);
 
                 videoNameToolStripMenuItem.Text = label_VideoName.Text;
-                //volumeSetToolStripMenuItem.Text = metroTrackBar_Volume.Value.ToString();
-                //brightnessSetToolStripMenuItem.Text = (metroTrackBar_Brightness.Value * 2).ToString();
 
-                volumeSetToolStripMenuItem.Value = m_iVolume;
-                brightnessSetToolStripMenuItem.Value = m_iBrightness;
+                if (m_bStyle)
+                {
+                    toolStripMenuItem_VolumeTrackBar.Theme = MetroThemeStyle.Dark;
+                    toolStripMenuItem_BrightnessTrackBar.Theme = MetroThemeStyle.Dark;
+                }
+                else
+                {
+                    toolStripMenuItem_VolumeTrackBar.Theme = MetroThemeStyle.Light;
+                    toolStripMenuItem_BrightnessTrackBar.Theme = MetroThemeStyle.Light;
+                }
+
+                toolStripMenuItem_VolumeTrackBar.Value = m_iVolume;
+                toolStripMenuItem_BrightnessTrackBar.Value = m_iBrightness;
             }
         }
 
@@ -1093,83 +1357,160 @@ namespace VideoWallpapers
 
         #region 미사용 (텍스트 입력 방식이라서 불편함)
 
-        /// <summary>
-        /// 숫자, 백스페이스, 엔터
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void VolumeSetToolStripMenuItem_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // BackSpace
-            if (!(char.IsDigit(e.KeyChar)) && e.KeyChar != 8 && e.KeyChar != 13)
-            {
-                e.Handled = true;
-            }
-            // Enter
-            else if (e.KeyChar == 13)
-            {
-                int itmp = Convert.ToInt32(volumeSetToolStripMenuItem.Text);
+        ///// <summary>
+        ///// 숫자, 백스페이스, 엔터
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void VolumeSetToolStripMenuItem_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    // BackSpace
+        //    if (!(char.IsDigit(e.KeyChar)) && e.KeyChar != 8 && e.KeyChar != 13)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //    // Enter
+        //    else if (e.KeyChar == 13)
+        //    {
+        //        int itmp = Convert.ToInt32(volumeSetToolStripMenuItem.Text);
 
-                if (itmp < 0 || itmp > 100)
-                {
-                    Form4.DialogCustom("Error!", "Please Input 0 ~ 100!");
-                    return;
-                }
+        //        if (itmp < 0 || itmp > 100)
+        //        {
+        //            Form4.DialogCustom("Error!", "Please Input 0 ~ 100!");
+        //            return;
+        //        }
 
-                m_iVolume = Convert.ToInt32(volumeSetToolStripMenuItem.Text);
-                metroTrackBar_Volume.Value = m_iVolume;
+        //        m_iVolume = Convert.ToInt32(volumeSetToolStripMenuItem.Text);
+        //        metroTrackBar_Volume.Value = m_iVolume;
 
-                m_setting.iVolume = metroTrackBar_Volume.Value;
-                m_setting.SaveToFile(m_strSettingFile);
-            }
-        }
+        //        m_setting.iVolume = metroTrackBar_Volume.Value;
+        //        m_setting.SaveToFile(m_strSettingFile);
+        //    }
+        //}
 
-        private void VolumeSetToolStripMenuItem_Leave(object sender, EventArgs e)
-        {
-            return;
-        }
+        //private void VolumeSetToolStripMenuItem_Leave(object sender, EventArgs e)
+        //{
+        //    return;
+        //}
 
-        /// <summary>
-        /// 숫자, 백스페이스, 엔터
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BrightnessSetToolStripMenuItem_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // BackSpace
-            if (!(char.IsDigit(e.KeyChar)) && e.KeyChar != 8 && e.KeyChar != 13)
-            {
-                e.Handled = true;
-            }
-            // Enter
-            else if (e.KeyChar == 13)
-            {
-                int itmp = Convert.ToInt32(brightnessSetToolStripMenuItem.Text);
+        ///// <summary>
+        ///// 숫자, 백스페이스, 엔터
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void BrightnessSetToolStripMenuItem_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    // BackSpace
+        //    if (!(char.IsDigit(e.KeyChar)) && e.KeyChar != 8 && e.KeyChar != 13)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //    // Enter
+        //    else if (e.KeyChar == 13)
+        //    {
+        //        int itmp = Convert.ToInt32(brightnessSetToolStripMenuItem.Text);
 
-                if (itmp < 10 || itmp > 100)
-                {
-                    Form4.DialogCustom("Error!", "Please Input 10 ~ 100!");
-                    return;
-                }
+        //        if (itmp < 10 || itmp > 100)
+        //        {
+        //            Form4.DialogCustom("Error!", "Please Input 10 ~ 100!");
+        //            return;
+        //        }
 
-                m_iBrightness = Convert.ToInt32(brightnessSetToolStripMenuItem.Text);
-                m_iBrightness /= 2;
+        //        m_iBrightness = Convert.ToInt32(brightnessSetToolStripMenuItem.Text);
+        //        m_iBrightness /= 2;
 
-                metroTrackBar_Brightness.Value = m_iBrightness;
+        //        metroTrackBar_Brightness.Value = m_iBrightness;
 
-                m_setting.iBrightness = metroTrackBar_Brightness.Value;
-                m_setting.SaveToFile(m_strSettingFile);
-            }
-        }
+        //        m_setting.iBrightness = metroTrackBar_Brightness.Value;
+        //        m_setting.SaveToFile(m_strSettingFile);
+        //    }
+        //}
 
-        private void BrightnessSetToolStripMenuItem_Leave(object sender, EventArgs e)
-        {
-            return;
-        }
+        //private void BrightnessSetToolStripMenuItem_Leave(object sender, EventArgs e)
+        //{
+        //    return;
+        //}
 
         #endregion
 
         #endregion
 
     }
+
+    #region Transparent Label Class
+
+    /// <summary>
+    /// 투명 라벨
+    /// </summary>
+    public class TransparentLabel : Control
+    {
+
+        public TransparentLabel()
+        {
+            TabStop = false;
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams createParams = base.CreateParams;
+                createParams.ExStyle |= 0x20;
+
+                return createParams;
+            }
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            using (SolidBrush solidBrush = new SolidBrush(Color.FromArgb(Form1.m_iTransparent, 0, 191, 255)))
+            {
+                e.Graphics.DrawString(Text, Font, solidBrush, -1, 0);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 투명 라벨 Top
+    /// </summary>
+    public class TransparentLabelTop : Control
+    {
+
+        public TransparentLabelTop()
+        {
+            TabStop = false;
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams createParams = base.CreateParams;
+                createParams.ExStyle |= 0x20;
+
+                return createParams;
+            }
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            using (SolidBrush solidBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 0)))
+            {
+                e.Graphics.DrawString(Text, Font, solidBrush, -1, 0);
+            }
+        }
+    }
+
+    #endregion
+
 }

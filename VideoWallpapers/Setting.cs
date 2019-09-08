@@ -46,6 +46,12 @@ namespace VideoWallpapers
             set;
         } = 0;
 
+        public bool bStyle
+        {
+            get;
+            set;
+        } = false;
+
         /// <summary>
         /// 파일에 저장
         /// </summary>
@@ -60,6 +66,7 @@ namespace VideoWallpapers
                 binaryWriter.Write(iBrightness);
                 binaryWriter.Write(bRandom);
                 binaryWriter.Write(iMonitor);
+                binaryWriter.Write(bStyle);
 
                 binaryWriter.Close();
             }
@@ -82,6 +89,7 @@ namespace VideoWallpapers
                     iBrightness = binaryReader.ReadInt32();
                     bRandom = binaryReader.ReadBoolean();
                     iMonitor = binaryReader.ReadInt32();
+                    bStyle = binaryReader.ReadBoolean();
                 }
                 catch
                 {
